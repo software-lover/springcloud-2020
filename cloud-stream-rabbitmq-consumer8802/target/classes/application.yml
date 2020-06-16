@@ -1,0 +1,48 @@
+server:
+  port: 8802
+
+
+spring:
+  application:
+    name: cloud-stream-consumer
+  cloud:
+    stream:
+      binders: #在此处配置要绑定的rabbitmq的服务信息
+        defaultRabbit: #表示定义的名称，用于binding整合
+          type: rabbit  #消息组件类型
+          environment: #设置rabbitmq的相关环境配置
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: guest
+                password: guest
+      bindings: #服务的整合处理
+        input: #这个名字是一个通道的名称
+          destination: studyExchange #表示要使用的Exchange名称定义
+          content-type: application/json  #设置消息类型，本次为json，文本则设置 "text/plain"
+          binder: defaultRabbit  #设置要绑定的消息服务的具体设置
+          #group: wzm8802  #自定义分组名称，避免随机产生的流水号难以阅读
+          group: wzm-group  #自定义分组名称，避免随机产生的流水号难以阅读
+
+
+# 整合eureka
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url:
+      #defaultZone: http://localhost:7001/eureka
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+    register-with-eureka: true #表示是否将自己注册进EurekaServer，默认为true
+    fetch-registry: true #是否从EurekaServer抓取已有的注册信息，默认为true，单节点无所谓，集群必须设置为true才能配合Ribbon使用负载均衡
+  # 提供者实例信息配置，完善actuator监控信息
+  instance:
+    instance-id: cloud-stream-consumer8802
+    prefer-ip-address: true     #注册的服务实例访问路径可以显示IP地址
+
+
+# 整合actuator监控信息
+info:
+  app.name: wzm-cloud
+  company.name: www.wzm.com
+  build.artifactId: cloud-stream-rabbitmq-consumer8802
+  build.version: 1.0-SNAPSHOT

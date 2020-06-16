@@ -1,0 +1,56 @@
+server:
+  port: 3344
+
+
+spring:
+  application:
+    name:  cloud-config-center
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/software-lover/microservicecloud-config.git #GitHub上面的git仓库名字
+          #搜索目录
+          search-paths:
+            - microservicecloud-config
+      #读取分支
+      label: master
+
+#rabbitmq相关配置
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+
+
+#rabbitmq相关配置，暴露bus刷新配置的端点
+management:
+  endpoints: #暴露bus刷新配置的端点
+    web:
+      exposure:
+        include: "bus-refresh"
+
+
+# 整合eureka
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url:
+      #defaultZone: http://localhost:7001/eureka
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+    register-with-eureka: true #表示是否将自己注册进EurekaServer，默认为true
+    fetch-registry: true #是否从EurekaServer抓取已有的注册信息，默认为true，单节点无所谓，集群必须设置为true才能配合Ribbon使用负载均衡
+  # 提供者实例信息配置，完善actuator监控信息
+  instance:
+    instance-id: cloud-config-center3344
+    prefer-ip-address: true     #注册的服务实例访问路径可以显示IP地址
+
+
+# 整合actuator监控信息
+info:
+  app.name: wzm-cloud
+  company.name: www.wzm.com
+  build.artifactId: ${project.artifactId}
+  build.version: ${project.version}
+
+
