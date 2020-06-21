@@ -65,5 +65,10 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.wzm.springcloud</groupId>
+            <artifactId>cloud-api-commons</artifactId>
+        </dependency>
     </dependencies>
 </project>
